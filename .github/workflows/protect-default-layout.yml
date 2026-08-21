@@ -1,0 +1,30 @@
+name: Protect default layout
+
+# src/default.vil and dist/default.vil are the read-only baseline layout.
+# This check always runs (no `paths` filter) so it posts a status on every
+# PR — a path-filtered trigger would silently never run, and required-status
+# rulesets can't be satisfied by a check that never appears.
+on:
+  pull_request:
+
+jobs:
+  protect-default-layout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure default.vil files are unchanged
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- src/default.vil dist/default.vil)
+          if [ -n "$CHANGED" ]; then
+            echo "::error::src/default.vil and dist/default.vil are read-only and must not be edited."
+            echo "Changed files:"
+            echo "$CHANGED"
+            exit 1
+          fi
+          echo "default.vil files unchanged."
