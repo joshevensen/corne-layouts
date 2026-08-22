@@ -1,6 +1,12 @@
 name: Protect default layout
 
-# src/default.vil and dist/default.vil are the read-only baseline layout.
+# dist/default.vil is the read-only baseline layout — the vendor's factory
+# dump, and also the "skeleton" scripts/build.js merges every other
+# layouts/*.md onto for the fields a layout doesn't define itself (uid,
+# encoder_layout, macro, tap_dance, combo, key_override, etc). There is no
+# src/default.vil or layouts/default.md — default.vil isn't part of the
+# layouts/*.md editing pipeline at all, so dist/default.vil is the only
+# copy of it in this repo.
 # This check always runs (no `paths` filter) so it posts a status on every
 # PR — a path-filtered trigger would silently never run, and required-status
 # rulesets can't be satisfied by a check that never appears.
@@ -15,16 +21,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Ensure default.vil files are unchanged
+      - name: Ensure default.vil is unchanged
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- src/default.vil dist/default.vil)
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- dist/default.vil)
           if [ -n "$CHANGED" ]; then
-            echo "::error::src/default.vil and dist/default.vil are read-only and must not be edited."
+            echo "::error::dist/default.vil is read-only and must not be edited."
             echo "Changed files:"
             echo "$CHANGED"
             exit 1
           fi
-          echo "default.vil files unchanged."
+          echo "default.vil unchanged."

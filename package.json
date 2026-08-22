@@ -1,9 +1,10 @@
 {
   "name": "corne-layouts",
   "private": true,
-  "description": "Vial layouts for a Corne keyboard. Edit the readable JSON in src/, build produces the .vil files Vial imports.",
+  "description": "Vial layouts for a Corne keyboard. Edit the visual keymaps in layouts/*.md, build produces the .vil files Vial imports into dist/.",
   "scripts": {
     "build": "node scripts/build.js",
-    "format": "node scripts/format.js"
+    "format": "node scripts/format.js",
+    "new": "node scripts/new-layout.js"
   }
 }
