@@ -152,6 +152,10 @@ function parseLabel(text, side) {
   }
   if (text in REV_NAMES) return REV_NAMES[text];
   if (/^[A-Z0-9]$/.test(text)) return `KC_${text}`;
+  // Bare layer functions with a numeric argument (MO(2), DF(0), TG(3), ...)
+  // display exactly as their own raw syntax (label()'s fallback just
+  // returns them unchanged), so they round-trip the same way.
+  if (/^[A-Z]+\(\d+\)$/.test(text)) return text;
   throw new Error(`Unrecognized key label "${text}"`);
 }
 
