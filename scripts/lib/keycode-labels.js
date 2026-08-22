@@ -63,7 +63,7 @@ const NAMES = {
   RGB_VAD: 'Val-',
   FN_MO13: 'MO1',
   FN_MO23: 'MO2',
-  KC_NO: '·',
+  KC_NO: '',
   KC_TRNS: '▽',
 };
 
@@ -92,7 +92,7 @@ const MOD_WRAP = {
 const WRAP_RE = /^([A-Z]+)\((.*)\)$/;
 
 function label(code) {
-  if (NAMES[code]) return NAMES[code];
+  if (code in NAMES) return NAMES[code];
   const m = WRAP_RE.exec(code);
   if (m && MOD_WRAP[m[1]]) return MOD_WRAP[m[1]] + label(m[2]);
   if (code.startsWith('KC_')) return code.slice(3);
@@ -142,7 +142,7 @@ const REV_MOD_WRAP = [
 // which half of the board this cell is printed on (only matters for the
 // four ambiguous bare modifier labels above).
 function parseLabel(text, side) {
-  if (text === '·') return 'KC_NO';
+  if (text === '' || text === '·') return 'KC_NO';
   if (text === '▽') return 'KC_TRNS';
   if (text in AMBIGUOUS_BARE) return AMBIGUOUS_BARE[text][side];
   for (const [sym, fn] of REV_MOD_WRAP) {

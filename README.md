@@ -91,11 +91,14 @@ R0                         [ Sft ] ( Spc ) [ MO1 ]           │           [ Cmd
   layer, regardless of what's assigned there. Purely a visual anchor; it
   doesn't change what the key does. `format` always puts parens/brackets
   at the position-correct spot regardless of which one you typed.
-- **`·`** is `KC_NO` — a real, physical key that's deliberately unbound
-  (does nothing when pressed).
+- **An empty bracketed cell** (`[     ]` or `(     )`) is `KC_NO` — a real,
+  physical key that's deliberately unbound (does nothing when pressed).
 - **Blank space** (no brackets at all) means there's no physical key at
   that position — e.g. the thumb row's unused columns, or the bottom
   row's missing "extra" column. Nothing to assign there.
+- The difference between the two: brackets present but empty means a
+  switch is there and unbound; no brackets at all means there's no switch
+  there to bind.
 
 Type either a short label from an existing cell, or any full QMK/Vial
 keycode (`KC_LEFT_CTRL`, `LSFT(KC_9)`, `MO(2)`, `TD(1)`, ...) — anything
