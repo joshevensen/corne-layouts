@@ -16,23 +16,32 @@ const { SETTINGS } = require('./lib/settings-catalog');
 const SRC_DIR = path.join(__dirname, '..', 'src');
 const OUT_DIR = path.join(__dirname, '..', 'layouts');
 
+// Column-aligned like vil.pretty()'s matrix rows, so the table reads
+// cleanly as plain text too, not just in a rendered Markdown viewer.
+function renderTable(headers, rows) {
+  const widths = headers.map((h, c) => Math.max(h.length, ...rows.map(r => r[c].length)));
+  const line = cells => `| ${cells.map((c, i) => c.padEnd(widths[i])).join(' | ')} |`;
+  const separator = `|${widths.map(w => '-'.repeat(w + 2)).join('|')}|`;
+  return [line(headers), separator, ...rows.map(line)].join('\n');
+}
+
 function renderSettingsSection(settings) {
   const knownIds = new Set(SETTINGS.map(s => s.id));
   const rows = SETTINGS.map(s => {
     const value = settings[String(s.id)];
-    return `| ${s.id} | ${s.name} | ${value !== undefined ? value : ''} | ${s.description} |`;
+    return [String(s.id), s.name, value !== undefined ? String(value) : '', s.description];
   });
 
   for (const key of Object.keys(settings)) {
     if (!knownIds.has(Number(key))) {
-      rows.push(`| ${key} | Unidentified | ${settings[key]} | Not in this project's settings catalog — see scripts/lib/settings-catalog.js. |`);
+      rows.push([key, 'Unidentified', String(settings[key]), "Not in this project's settings catalog — see scripts/lib/settings-catalog.js."]);
     }
   }
 
   return [
     '## Settings',
     "QMK Settings values from this file, in Vial's numeric QSID form. See `scripts/lib/settings-catalog.js` for where these names/descriptions come from and how confident they are (ID 8 is unidentified).",
-    ['| ID | Setting | Value | Description |', '|----|---------|-------|-------------|', ...rows].join('\n'),
+    renderTable(['ID', 'Setting', 'Value', 'Description'], rows),
   ].join('\n\n');
 }
 
