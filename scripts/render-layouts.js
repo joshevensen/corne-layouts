@@ -15,6 +15,12 @@
 // that's also what gives the thumb cluster its floating-under-the-block
 // look instead of being flush left. Rows are printed straight, without the
 // keyboard's physical column stagger.
+//
+// The row/column numbers in each diagram are the actual indices into that
+// layer's 8-row array (layout[layer][row][col]) — "L0 R4" labels a printed
+// line as left-half array row 0 merged with right-half array row 4, and the
+// column header is each row's own array column index (right-half columns
+// print in the same reversed order as the cells above them).
 
 const fs = require('fs');
 const path = require('path');
@@ -24,10 +30,18 @@ const { label } = require('./lib/keycode-labels');
 const SRC_DIR = path.join(__dirname, '..', 'src');
 const OUT_DIR = path.join(__dirname, '..', 'layouts');
 
-const CELL_WIDTH = 6;
+const CELL_WIDTH = 5;
 const CELL_TOTAL_WIDTH = CELL_WIDTH + 2; // "[" + text + "]"
 const HALF_GAP = '   │   ';
 const BLANK_CELL = ' '.repeat(CELL_TOTAL_WIDTH);
+const ROW_LABEL_WIDTH = 5; // "L0 R4"
+
+function centered(text, width) {
+  const padding = Math.max(0, width - text.length);
+  const left = Math.floor(padding / 2);
+  const right = padding - left;
+  return `${' '.repeat(left)}${text}${' '.repeat(right)}`;
+}
 
 // -1 means no physical key exists there at all (e.g. the columns a thumb
 // row doesn't use), so it renders as blank space rather than a bracketed
@@ -35,22 +49,37 @@ const BLANK_CELL = ' '.repeat(CELL_TOTAL_WIDTH);
 // the "│" gap up across rows and gives the thumb cluster its floating look.
 function cell(code) {
   if (code === -1) return BLANK_CELL;
-  const text = label(code);
-  const padding = Math.max(0, CELL_WIDTH - text.length);
-  const left = Math.floor(padding / 2);
-  const right = padding - left;
-  return `[${' '.repeat(left)}${text}${' '.repeat(right)}]`;
+  return `[${centered(label(code), CELL_WIDTH)}]`;
 }
 
-function renderRow(leftRow, rightRow) {
+// Unbracketed, same total width as cell() so it lines up with the row above.
+function colHeaderCell(n) {
+  return centered(String(n), CELL_TOTAL_WIDTH);
+}
+
+function renderRow(rowLabelText, leftRow, rightRow) {
   const left = leftRow.map(cell).join(' ');
   const right = [...rightRow].reverse().map(cell).join(' ');
-  return `${left}${HALF_GAP}${right}`;
+  return `${rowLabelText.padEnd(ROW_LABEL_WIDTH)} ${left}${HALF_GAP}${right}`;
+}
+
+function renderColHeader() {
+  const cols = [0, 1, 2, 3, 4, 5, 6];
+  const left = cols.map(colHeaderCell).join(' ');
+  const right = [...cols].reverse().map(colHeaderCell).join(' ');
+  return `${' '.repeat(ROW_LABEL_WIDTH)} ${left}${HALF_GAP}${right}`;
 }
 
 function renderLayer(layer) {
   const [l1, l2, l3, lThumb, r1, r2, r3, rThumb] = layer;
-  return [renderRow(l1, r1), renderRow(l2, r2), renderRow(l3, r3), '', renderRow(lThumb, rThumb)].join('\n');
+  return [
+    renderColHeader(),
+    renderRow('L0 R4', l1, r1),
+    renderRow('L1 R5', l2, r2),
+    renderRow('L2 R6', l3, r3),
+    '',
+    renderRow('L3 R7', lThumb, rThumb),
+  ].join('\n');
 }
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
