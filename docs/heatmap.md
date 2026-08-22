@@ -1,7 +1,7 @@
 # Reach Effort Heatmap
 
 Which physical key positions on this board are easiest vs. hardest to
-reach, scored 0 (easiest) upward. This isn't a measured/empirical dataset
+reach, scored 1 (easiest) upward. This isn't a measured/empirical dataset
 for this exact board — no published effort grid I found covers a 46-key
 Corne with 4 extra keys specifically — it's an original scale built from
 well-corroborated ergonomic principles found across multiple sources (see
@@ -12,11 +12,11 @@ exactly with the layer grids in `layouts/*.md`.
 
 ```
       0       1       2       3       4       5       6      │      6       5       4       3       2       1       0   
-R3 [  3  ] [  2  ] [  2  ] [  2  ] [  2  ] [  3  ] [  4  ]   │   [  4  ] [  3  ] [  2  ] [  2  ] [  2  ] [  2  ] [  3  ]
-R2 [  1  ] (  0  ) (  0  ) (  0  ) (  0  ) [  1  ] [  4  ]   │   [  4  ] [  1  ] (  0  ) (  0  ) (  0  ) (  0  ) [  1  ]
-R1 [  3  ] [  2  ] [  2  ] [  2  ] [  2  ] [  3  ]   │   [  3  ] [  2  ] [  2  ] [  2  ] [  2  ] [  3  ]
+R3 [  5  ] [  3  ] [  3  ] [  3  ] [  3  ] [  5  ] [  6  ]   │   [  6  ] [  5  ] [  3  ] [  3  ] [  3  ] [  3  ] [  5  ]
+R2 [  2  ] (  1  ) (  1  ) (  1  ) (  1  ) [  2  ] [  6  ]   │   [  6  ] [  2  ] (  1  ) (  1  ) (  1  ) (  1  ) [  2  ]
+R1 [  5  ] [  4  ] [  4  ] [  4  ] [  4  ] [  5  ]           │           [  5  ] [  4  ] [  4  ] [  4  ] [  4  ] [  5  ]
 
-R0                         [  1  ] (  0  ) [  1  ]           │           [  1  ] (  0  ) [  1  ]                        
+R0                         [  2  ] (  1  ) [  2  ]           │           [  2  ] (  1  ) [  2  ]                        
 ```
 
 Row/column conventions match `README.md`: `R3` top → `R0` thumbs, columns
@@ -29,11 +29,12 @@ column) — there's no key there to score.
 
 | Score | Meaning |
 |---|---|
-| **0** | Home position. The 4 resting-finger columns on the home row, and the primary thumb key each thumb naturally lands on. No movement from rest. |
-| **1** | One lateral stretch from home, no row change. The home row's outer (pinky) and inner (index) columns — same row, just reaching sideways — and the secondary thumb keys, which stay on the easy, strong thumb cluster. |
-| **2** | One row of vertical travel, core column. Top or bottom row, in the same 4 columns each finger already rests over on the home row. |
-| **3** | One row of vertical travel *and* a lateral stretch, combined. Top or bottom row, outer (pinky) or inner (index) column — the worst reach still achievable by curling/stretching a finger without lifting the hand. |
-| **4** | The 4 extra keys. Not a stretch — a genuinely separate switch that requires lifting the hand off its resting position to reach at all, breaking touch-typing by feel. Hardest tier, by a wide margin. |
+| **1** | Home position. The 4 resting-finger columns on the home row, and the primary thumb key each thumb naturally lands on. No movement from rest. |
+| **2** | One lateral stretch from home, no row change. The home row's outer (pinky) and inner (index) columns — same row, just reaching sideways — and the secondary thumb keys, which stay on the easy, strong thumb cluster. |
+| **3** | Top row, core column. One row of *upward* travel, in the same 4 columns each finger already rests over on the home row. |
+| **4** | Bottom row, core column. One row of *downward* travel, same core columns — scored a step above the top row, since the top row is the easier of the two directions (see Methodology). |
+| **5** | Top or bottom row, outer (pinky) or inner (index) column. A row-shift *and* a lateral stretch combined — the worst reach still achievable by curling/stretching a finger without lifting the hand, in either direction. |
+| **6** | The 4 extra keys. Not a stretch — a genuinely separate switch that requires lifting the hand off its resting position to reach at all, breaking touch-typing by feel. Hardest tier, by a wide margin. |
 
 ## Methodology
 
@@ -54,8 +55,19 @@ specific figures, I built the scale above from the same project's stated
 - **Lateral reach costs less than vertical reach.** Moving to the home
   row's outer or inner column is one finger stretching sideways; moving to
   the top or bottom row is the finger leaving its resting height
-  entirely — a materially bigger motion. This is why score 1 (lateral-only)
-  sits below score 2 (vertical-only) in this scale.
+  entirely — a materially bigger motion. This is why score 2 (lateral-only)
+  sits below scores 3-4 (vertical-only) in this scale.
+- **Upward reach costs less than downward reach.** This one's judgment-call
+  territory rather than something I found stated numerically in a source —
+  it's a real, commonly-reported preference (fingers curl upward toward the
+  top row more naturally than they extend down toward the bottom row for
+  most people), and it matches what you described. Scored as one full tier
+  of difference (3 vs. 4) for the core columns. Once a lateral stretch is
+  also involved (score 5), I stopped trying to further rank top-stretch vs.
+  bottom-stretch against each other — both already require a diagonal
+  reach, which is awkward enough in either direction that I don't think
+  the direction still dominates the way it does for a straight vertical
+  reach. If your experience says otherwise, this is the tier to adjust.
 - **Pinky and far-index reaches carry extra cost.** Multiple sources note
   pinky movements are penalized more heavily than equivalent-distance
   moves by stronger fingers — "effectively a double penalty for pinky keys
@@ -67,7 +79,7 @@ specific figures, I built the scale above from the same project's stated
 - **Thumb keys are cheap.** Corne-specific community writing on exactly
   this board shape confirms the design intent: common keys get moved "from
   pinky positions to thumb keys" because the thumb is strong and already at
-  rest nearby — consistent with scoring every thumb key at 0 or 1,
+  rest nearby — consistent with scoring every thumb key at 1 or 2,
   regardless of which of the three thumb positions it is.
 - **A key that isn't reachable without lifting the hand is categorically
   worse than any in-place stretch.** This is this board's own physical
