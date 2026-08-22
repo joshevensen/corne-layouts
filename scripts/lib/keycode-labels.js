@@ -1,6 +1,6 @@
 'use strict';
 
-// Short display labels for keycodes, used by scripts/render-layouts.js to
+// Short display labels for keycodes, used by scripts/lib/layout-grid.js to
 // draw compact ASCII-art keyboard diagrams. Anything not listed here falls
 // back to the keycode's own text with the KC_ prefix stripped, which is
 // already short enough for plain letters/digits (KC_Q -> Q, KC_5 -> 5).
@@ -99,7 +99,7 @@ function label(code) {
   return code;
 }
 
-// --- Reverse direction: label -> keycode, for scripts/apply-layouts.js ---
+// --- Reverse direction: label -> keycode, for scripts/lib/parse-layout-md.js ---
 //
 // A few bare labels (Sft, Ctl, Alt, Cmd) come from both an L* and an R*
 // keycode in NAMES, so they can't be inverted context-free — which one a

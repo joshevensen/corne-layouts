@@ -1,11 +1,11 @@
 'use strict';
 
 // Shared grid layout/parsing logic for the ASCII keymap diagrams in
-// layouts/*.md. scripts/render-layouts.js (src/*.vil -> layouts/*.md) and
-// scripts/apply-layouts.js (layouts/*.md -> src/*.vil) both import this
-// module so the two directions can never drift out of sync with each
-// other — every width/offset used to parse a line is the exact same
-// constant used to print it.
+// layouts/*.md. scripts/lib/render-layout-md.js (rendering) and
+// scripts/lib/parse-layout-md.js (parsing) both import this module so the
+// two directions can never drift out of sync with each other — every
+// width/offset used to parse a line is the exact same constant used to
+// print it.
 //
 // Physical column order is read straight from the array itself (see
 // scripts/lib/vil-json.js and the -1 sentinel for "no physical key here"),
