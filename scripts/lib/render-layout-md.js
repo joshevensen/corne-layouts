@@ -20,6 +20,30 @@ function renderTable(headers, rows) {
   return [line(headers), separator, ...rows.map(line)].join('\n');
 }
 
+// Combos and macros aren't wired into scripts/build.js yet — every .vil in
+// this repo has them empty, and build.js carries them over untouched from
+// the dist/default.vil skeleton (see scripts/build.js's own comment).
+// These sections are documentation only: editing them here has no effect
+// until parse-layout-md.js/build.js grow support for reading them back.
+
+function renderComboSection() {
+  return [
+    '## Combos',
+    'Two (or more) keys pressed together trigger a third action, with no timing penalty on either key by itself (unlike mod-tap) — see `docs/qmk-features.md` for good candidates (adjacent same-hand pairs you would not otherwise roll through, e.g. `Esc` on `Q`+`W`).',
+    "**Not yet editable here** — `npm run build` doesn't read this section, so changes below won't reach `dist/*.vil`. Set combos up directly in Vial's GUI (Combos tab; changes apply live, no rebuild needed) until this repo's tooling catches up.",
+    'No combos are currently defined (all 32 slots are empty).',
+  ].join('\n\n');
+}
+
+function renderMacroSection() {
+  return [
+    '## Macros',
+    "A macro plays back a recorded sequence of keystrokes from a single key — Vial's GUI Macros tab edits these live, no recompile needed. Good candidates: your email address, CLI invocations, git command prefixes, long import paths.",
+    "**Not yet editable here** — `npm run build` doesn't read this section, so changes below won't reach `dist/*.vil`. Set macros up directly in Vial's GUI (Macros tab) until this repo's tooling catches up.",
+    'No macros are currently defined (all 16 slots are empty).',
+  ].join('\n\n');
+}
+
 function renderSettingsSection(settings) {
   const knownIds = new Set(SETTINGS.map(s => s.id));
   const rows = SETTINGS.map(s => {
@@ -48,6 +72,8 @@ function renderLayoutMarkdown(label, { layout, settings }) {
       `# ${label}.vil — Visual Layout`,
       `Source of truth for \`dist/${label}.vil\` — edit the grids and the Settings table below, then run \`npm run build\` to produce it. Run \`npm run format\` first if you've hand-edited this file and the columns have drifted out of alignment.`,
       ...layerSections,
+      renderComboSection(),
+      renderMacroSection(),
       renderSettingsSection(settings || {}),
     ].join('\n\n') + '\n'
   );

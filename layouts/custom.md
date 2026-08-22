@@ -68,6 +68,22 @@ R1 [  ▽  ] [  ▽  ] [  ▽  ] [  ▽  ] [  ▽  ] [  ▽  ]           │    
 R0                         [  ▽  ] [  ▽  ] [  ▽  ]           │           [  ▽  ] [  ▽  ] [  ▽  ]                        
 ```
 
+## Combos
+
+Two (or more) keys pressed together trigger a third action, with no timing penalty on either key by itself (unlike mod-tap) — see `docs/qmk-features.md` for good candidates (adjacent same-hand pairs you would not otherwise roll through, e.g. `Esc` on `Q`+`W`).
+
+**Not yet editable here** — `npm run build` doesn't read this section, so changes below won't reach `dist/*.vil`. Set combos up directly in Vial's GUI (Combos tab; changes apply live, no rebuild needed) until this repo's tooling catches up.
+
+No combos are currently defined (all 32 slots are empty).
+
+## Macros
+
+A macro plays back a recorded sequence of keystrokes from a single key — Vial's GUI Macros tab edits these live, no recompile needed. Good candidates: your email address, CLI invocations, git command prefixes, long import paths.
+
+**Not yet editable here** — `npm run build` doesn't read this section, so changes below won't reach `dist/*.vil`. Set macros up directly in Vial's GUI (Macros tab) until this repo's tooling catches up.
+
+No macros are currently defined (all 16 slots are empty).
+
 ## Settings
 
 QMK Settings values from this file, in Vial's numeric QSID form. See `scripts/lib/settings-catalog.js` for where these names/descriptions come from and how confident they are (ID 8 is unidentified).
