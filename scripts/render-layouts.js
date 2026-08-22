@@ -1,85 +1,39 @@
 'use strict';
 
 // Renders each .vil source in src/ into a stacked ASCII-art visual keymap,
-// one Markdown file per source, written into layouts/.
-//
-// Physical column order is read straight from the array itself (see
-// scripts/lib/vil-json.js and the -1 sentinel for "no physical key here"),
-// not inferred from any design doc. Per half, the array's column index runs
-// from that half's outer edge to the center gap (confirmed against
-// dist/default.vil), so the left half prints in array order and the right
-// half prints reversed — that puts both halves' outer edges at the far left
-// and right of the page, with the center gap in the middle. Every row keeps
-// all 7 column slots (rendering -1 as blank space instead of dropping it),
-// so each half is a fixed width and the "│" gap lines up across every row —
-// that's also what gives the thumb cluster its floating-under-the-block
-// look instead of being flush left. Rows are printed straight, without the
-// keyboard's physical column stagger.
-//
-// Each printed line gets a single row label, R3 (top) down to R0 (thumbs) —
-// not the raw array's row index, which would need two numbers per line
-// since layout[layer] interleaves left (rows 0-3) and right (rows 4-7). The
-// column header is each row's own array column index (right-half columns
-// print in the same reversed order as the cells above them).
+// one Markdown file per source, written into layouts/. Includes a Settings
+// section documenting the .vil's QMK Settings values. See
+// scripts/apply-layouts.js for the reverse direction (layouts/*.md ->
+// src/*.vil), and scripts/lib/layout-grid.js for the grid format both
+// scripts share.
 
 const fs = require('fs');
 const path = require('path');
 const vil = require('./lib/vil-json');
-const { label } = require('./lib/keycode-labels');
+const { renderLayer } = require('./lib/layout-grid');
+const { SETTINGS } = require('./lib/settings-catalog');
 
 const SRC_DIR = path.join(__dirname, '..', 'src');
 const OUT_DIR = path.join(__dirname, '..', 'layouts');
 
-const CELL_WIDTH = 5;
-const CELL_TOTAL_WIDTH = CELL_WIDTH + 2; // "[" + text + "]"
-const HALF_GAP = '   │   ';
-const BLANK_CELL = ' '.repeat(CELL_TOTAL_WIDTH);
-const ROW_LABEL_WIDTH = 2; // "R3"
+function renderSettingsSection(settings) {
+  const knownIds = new Set(SETTINGS.map(s => s.id));
+  const rows = SETTINGS.map(s => {
+    const value = settings[String(s.id)];
+    return `| ${s.id} | ${s.name} | ${value !== undefined ? value : ''} | ${s.description} |`;
+  });
 
-function centered(text, width) {
-  const padding = Math.max(0, width - text.length);
-  const left = Math.floor(padding / 2);
-  const right = padding - left;
-  return `${' '.repeat(left)}${text}${' '.repeat(right)}`;
-}
+  for (const key of Object.keys(settings)) {
+    if (!knownIds.has(Number(key))) {
+      rows.push(`| ${key} | Unidentified | ${settings[key]} | Not in this project's settings catalog — see scripts/lib/settings-catalog.js. |`);
+    }
+  }
 
-// -1 means no physical key exists there at all (e.g. the columns a thumb
-// row doesn't use), so it renders as blank space rather than a bracketed
-// cell — that keeps every row the same width per half, which is what lines
-// the "│" gap up across rows and gives the thumb cluster its floating look.
-function cell(code) {
-  if (code === -1) return BLANK_CELL;
-  return `[${centered(label(code), CELL_WIDTH)}]`;
-}
-
-// Unbracketed, same total width as cell() so it lines up with the row above.
-function colHeaderCell(n) {
-  return centered(String(n), CELL_TOTAL_WIDTH);
-}
-
-function renderRow(rowLabelText, leftRow, rightRow) {
-  const left = leftRow.map(cell).join(' ');
-  const right = [...rightRow].reverse().map(cell).join(' ');
-  return `${rowLabelText.padEnd(ROW_LABEL_WIDTH)} ${left}${HALF_GAP}${right}`;
-}
-
-function renderColHeader() {
-  const cols = [0, 1, 2, 3, 4, 5, 6];
-  const left = cols.map(colHeaderCell).join(' ');
-  const right = [...cols].reverse().map(colHeaderCell).join(' ');
-  return `${' '.repeat(ROW_LABEL_WIDTH)} ${left}${HALF_GAP}${right}`;
-}
-
-function renderLayer(layer) {
-  const [l1, l2, l3, lThumb, r1, r2, r3, rThumb] = layer;
   return [
-    renderColHeader(),
-    renderRow('R3', l1, r1),
-    renderRow('R2', l2, r2),
-    renderRow('R1', l3, r3),
-    '',
-    renderRow('R0', lThumb, rThumb),
-  ].join('\n');
+    '## Settings',
+    "QMK Settings values from this file, in Vial's numeric QSID form. See `scripts/lib/settings-catalog.js` for where these names/descriptions come from and how confident they are (ID 8 is unidentified).",
+    ['| ID | Setting | Value | Description |', '|----|---------|-------|-------------|', ...rows].join('\n'),
+  ].join('\n\n');
 }
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -95,13 +49,14 @@ for (const file of files) {
   const obj = vil.parse(fs.readFileSync(srcPath, 'utf8'));
   const base = path.basename(file, '.vil');
 
-  const sections = obj.layout.map((layer, i) => `## Layer ${i}\n\n\`\`\`\n${renderLayer(layer)}\n\`\`\``);
+  const layerSections = obj.layout.map((layer, i) => `## Layer ${i}\n\n\`\`\`\n${renderLayer(layer)}\n\`\`\``);
 
   const md =
     [
       `# ${base}.vil — Visual Layout`,
-      `Auto-generated by \`scripts/render-layouts.js\` from \`src/${file}\`. Do not edit by hand — re-run the script instead.`,
-      ...sections,
+      `Auto-generated by \`scripts/render-layouts.js\` from \`src/${file}\`. Edit this file and run \`npm run apply\` to write your changes back to \`src/${file}\` (and rebuild \`dist/${file}\`) — or edit \`src/${file}\` directly and re-run \`npm run render\` to regenerate this file from scratch.`,
+      ...layerSections,
+      renderSettingsSection(obj.settings || {}),
     ].join('\n\n') + '\n';
 
   const outPath = path.join(OUT_DIR, `${base}.md`);

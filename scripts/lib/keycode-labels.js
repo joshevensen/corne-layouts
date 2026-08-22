@@ -99,4 +99,60 @@ function label(code) {
   return code;
 }
 
-module.exports = { label };
+// --- Reverse direction: label -> keycode, for scripts/apply-layouts.js ---
+//
+// A few bare labels (Sft, Ctl, Alt, Cmd) come from both an L* and an R*
+// keycode in NAMES, so they can't be inverted context-free — which one a
+// cell means depends on which half it's printed on (this board's own
+// convention, confirmed against dist/default.vil: left-half modifier keys
+// are the L* variant, right-half are R*). Wrapped mod-tap combos like
+// LGUI(KC_C) are unambiguous either way, since every wrapped modifier in
+// this project's actual .vil files uses the L*-prefixed function regardless
+// of which half it's on (macOS treats LGUI/RGUI shortcuts identically).
+
+const AMBIGUOUS_BARE = {
+  Sft: { left: 'KC_LSHIFT', right: 'KC_RSHIFT' },
+  Ctl: { left: 'KC_LCTRL', right: 'KC_RCTRL' },
+  Alt: { left: 'KC_LALT', right: 'KC_RALT' },
+  Cmd: { left: 'KC_LGUI', right: 'KC_RGUI' },
+};
+
+const REV_NAMES = {};
+for (const [code, lbl] of Object.entries(NAMES)) {
+  if (lbl in AMBIGUOUS_BARE) continue;
+  if (!(lbl in REV_NAMES)) REV_NAMES[lbl] = code; // first entry wins (e.g. KC_PGDN over its KC_PGDOWN alias)
+}
+
+// Canonical (always L*-prefixed) reverse of MOD_WRAP, sorted longest-symbol
+// first so a combo like "⇧⌘" is matched before its "⇧" or "⌘" substrings.
+const REV_MOD_WRAP = [
+  ['⌃⇧⌥⌘', 'HYPR'],
+  ['⌃⇧⌥', 'MEH'],
+  ['⇧⌘', 'SGUI'],
+  ['⌃⌥⌘', 'LCAG'],
+  ['⌃⌥', 'LCA'],
+  ['⇧⌥', 'LSA'],
+  ['⌘', 'LGUI'],
+  ['⌥', 'LALT'],
+  ['⌃', 'LCTL'],
+  ['⇧', 'LSFT'],
+].sort((a, b) => b[0].length - a[0].length);
+
+// text: the trimmed content of one bracketed cell. side: 'left' or 'right',
+// which half of the board this cell is printed on (only matters for the
+// four ambiguous bare modifier labels above).
+function parseLabel(text, side) {
+  if (text === '·') return 'KC_NO';
+  if (text === '▽') return 'KC_TRNS';
+  if (text in AMBIGUOUS_BARE) return AMBIGUOUS_BARE[text][side];
+  for (const [sym, fn] of REV_MOD_WRAP) {
+    if (text.startsWith(sym) && text.length > sym.length) {
+      return `${fn}(${parseLabel(text.slice(sym.length), side)})`;
+    }
+  }
+  if (text in REV_NAMES) return REV_NAMES[text];
+  if (/^[A-Z0-9]$/.test(text)) return `KC_${text}`;
+  throw new Error(`Unrecognized key label "${text}"`);
+}
+
+module.exports = { label, parseLabel };

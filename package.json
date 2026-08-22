@@ -5,6 +5,7 @@
   "scripts": {
     "build": "node scripts/build.js",
     "format": "node scripts/format.js",
-    "render": "node scripts/render-layouts.js"
+    "render": "node scripts/render-layouts.js",
+    "apply": "node scripts/apply-layouts.js"
   }
 }
