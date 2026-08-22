@@ -1,6 +1,6 @@
 # custom.vil — Visual Layout
 
-Source of truth for `dist/custom.vil` — edit the grids and the Settings table below, then run `npm run build` to produce it. Run `npm run format` first if you've hand-edited this file and the columns have drifted out of alignment.
+Source of truth for `dist/custom.vil` — edit the sections below, then run `npm run build` to produce it. Run `npm run format` first if you've hand-edited this file and columns have drifted out of alignment.
 
 ## Layer 0
 
@@ -72,17 +72,18 @@ R0                         [  ▽  ] [  ▽  ] [  ▽  ]           │          
 
 Two (or more) keys pressed together trigger a third action, with no timing penalty on either key by itself (unlike mod-tap) — see `docs/qmk-features.md` for good candidates (adjacent same-hand pairs you would not otherwise roll through, e.g. `Esc` on `Q`+`W`).
 
-**Not yet editable here** — `npm run build` doesn't read this section, so changes below won't reach `dist/*.vil`. Set combos up directly in Vial's GUI (Combos tab; changes apply live, no rebuild needed) until this repo's tooling catches up.
+List 1-4 trigger keycodes per row (comma-separated) and the output keycode they produce, using full keycode names — not the short labels in the layer grids above. Up to 32 combos total; leave the table with no data rows for none.
 
-No combos are currently defined (all 32 slots are empty).
+| Trigger Keys | Output |
+|--------------|--------|
 
 ## Macros
 
-A macro plays back a recorded sequence of keystrokes from a single key — Vial's GUI Macros tab edits these live, no recompile needed. Good candidates: your email address, CLI invocations, git command prefixes, long import paths.
+A macro plays back a recorded sequence of keystrokes from a single key — good candidates: your email address, CLI invocations, git command prefixes, long import paths.
 
-**Not yet editable here** — `npm run build` doesn't read this section, so changes below won't reach `dist/*.vil`. Set macros up directly in Vial's GUI (Macros tab) until this repo's tooling catches up.
+One `### Macro N` subsection per macro you want (N is 0-15, matching the `M0`-`M15` keycode you'd put on a key in a layer grid to trigger it). Each line is one action: `- text: "literal string"` types text as-is; `- tap: KC_A` / `- down: KC_A` / `- up: KC_A` take a comma-separated list of keycodes tapped/pressed/released together; `- delay: 100` waits that many milliseconds. Up to 16 macros total; omit a subsection for one you don't use.
 
-No macros are currently defined (all 16 slots are empty).
+_No macros are currently defined._
 
 ## Settings
 

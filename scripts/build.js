@@ -1,15 +1,16 @@
 'use strict';
 
 // layouts/*.md (other than default.md) is this repo's source of truth for
-// this keyboard's keymaps. This merges each one's layer grids + Settings
-// table onto dist/default.vil's structure — the vendor's frozen, protected
-// factory dump (see .github/workflows/protect-default-layout.yml) — which
-// supplies every field a layouts/*.md doesn't show: uid, encoder_layout,
-// macro, tap_dance, combo, key_override, alt_repeat_key, layout_options,
-// version, vial_protocol, via_protocol. Those fields are identical across
-// every layout on this board (confirmed by diffing all of them against
-// each other), so there's nothing lost by not tracking them per-layout —
-// and default.vil already has to exist and stay unchanged regardless.
+// this keyboard's keymaps. This merges each one's layer grids, Settings,
+// Combos, and Macros sections onto dist/default.vil's structure — the
+// vendor's frozen, protected factory dump (see
+// .github/workflows/protect-default-layout.yml) — which supplies every
+// field a layouts/*.md doesn't show: uid, encoder_layout, tap_dance,
+// key_override, alt_repeat_key, layout_options, version, vial_protocol,
+// via_protocol. Those fields are identical across every layout on this
+// board (confirmed by diffing all of them against each other), so there's
+// nothing lost by not tracking them per-layout — and default.vil already
+// has to exist and stay unchanged regardless.
 
 const fs = require('fs');
 const path = require('path');
@@ -39,13 +40,13 @@ for (const file of files) {
   const base = path.basename(file, '.md');
   try {
     const md = fs.readFileSync(path.join(LAYOUTS_DIR, file), 'utf8');
-    const { layout, settings } = parseLayoutMarkdown(md, base, expectedSettingIds);
+    const { layout, settings, combo, macro } = parseLayoutMarkdown(md, base, expectedSettingIds);
 
     if (layout.length !== skeleton.layout.length) {
       throw new Error(`layouts/${file} has ${layout.length} layer(s) but the vendor baseline has ${skeleton.layout.length} — layer count must match.`);
     }
 
-    const obj = { ...skeleton, layout, settings };
+    const obj = { ...skeleton, layout, settings, combo, macro };
     const distPath = path.join(DIST_DIR, `${base}.vil`);
     fs.writeFileSync(distPath, vil.compact(obj) + '\n');
     console.log(`built ${path.relative(process.cwd(), distPath)}`);
