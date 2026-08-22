@@ -1,9 +1,10 @@
 # Character Usage Frequency
 
 Reference data for keymap design decisions (which keys deserve the easiest
-positions). Three sections: English letters, English punctuation/symbols,
-and programming symbols for JS/TS and PHP. Confidence varies by section —
-see each section's methodology note.
+positions, and which key pairs are worth pairing up for combos). Four
+sections: English letters, common letter combinations (bigrams/trigrams),
+English punctuation/symbols, and programming symbols for JS/TS and PHP.
+Confidence varies by section — see each section's methodology note.
 
 ---
 
@@ -51,7 +52,62 @@ Source: [Norvig, "English Letter Frequency Counts: Mayzner Revisited"](https://w
 
 ---
 
-## 2. English punctuation and symbols (most → least used)
+## 2. Common letter combinations (most → least used)
+
+**Confidence: high for bigrams (real percentages, same corpus as section
+1). Rank-order only for trigrams** — Norvig's page lists the top 50
+three-letter sequences by rank but doesn't publish percentages for them on
+the page itself (they're available as a separate downloadable dataset it
+links to, which I didn't fetch).
+
+### Bigrams (two-letter sequences)
+
+| Rank | Bigram | Frequency |
+|---|---|---|
+| 1 | TH | 3.56% |
+| 2 | HE | 3.07% |
+| 3 | IN | 2.43% |
+| 4 | ER | 2.05% |
+| 5 | AN | 1.99% |
+| 6 | RE | 1.85% |
+| 7 | ON | 1.76% |
+| 8 | AT | 1.49% |
+| 9 | EN | 1.45% |
+| 10 | ND | 1.35% |
+| 11 | TI | 1.34% |
+| 12 | ES | 1.34% |
+| 13 | OR | 1.28% |
+| 14 | TE | 1.20% |
+| 15 | OF | 1.17% |
+| 16 | ED | 1.17% |
+| 17 | IS | 1.13% |
+| 18 | IT | 1.12% |
+| 19 | AL | 1.09% |
+| 20 | AR | 1.07% |
+| 21 | ST | 1.05% |
+| 22 | TO | 1.04% |
+| 23 | NT | 1.04% |
+| 24 | NG | 0.95% |
+| 25 | SE | 0.93% |
+| 26 | HA | 0.93% |
+| 27 | AS | 0.87% |
+| 28 | OU | 0.87% |
+| 29 | IO | 0.83% |
+| 30 | LE | 0.83% |
+
+### Trigrams (three-letter sequences)
+
+Rank order only — no published percentages from this source. Top 30 of
+the 50 listed:
+
+THE, AND, ING, ION, TIO, ENT, ATI, FOR, HER, TER, HAT, THA, ERE, ATE, HIS,
+CON, RES, VER, ALL, ONS, NCE, MEN, ITH, TED, ERS, PRO, THI, WIT, ARE, ESS
+
+Source: [Norvig, "English Letter Frequency Counts: Mayzner Revisited"](https://www.norvig.com/mayzner.html)
+
+---
+
+## 3. English punctuation and symbols (most → least used)
 
 **Confidence: high**, for relative ordering — absolute percentages weren't
 available from this source, only rank order. From a character-frequency
@@ -108,7 +164,7 @@ Sources:
 
 ---
 
-## 3. Programming symbols — JS/TS and PHP
+## 4. Programming symbols — JS/TS and PHP
 
 **Confidence: moderate — this section is a reasoned estimate, not measured
 corpus data, and should be read differently from sections 1-2 above.**
