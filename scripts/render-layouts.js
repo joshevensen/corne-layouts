@@ -9,8 +9,12 @@
 // from that half's outer edge to the center gap (confirmed against
 // dist/default.vil), so the left half prints in array order and the right
 // half prints reversed — that puts both halves' outer edges at the far left
-// and right of the page, with the center gap in the middle. Rows are
-// printed straight, without the keyboard's physical column stagger.
+// and right of the page, with the center gap in the middle. Every row keeps
+// all 7 column slots (rendering -1 as blank space instead of dropping it),
+// so each half is a fixed width and the "│" gap lines up across every row —
+// that's also what gives the thumb cluster its floating-under-the-block
+// look instead of being flush left. Rows are printed straight, without the
+// keyboard's physical column stagger.
 
 const fs = require('fs');
 const path = require('path');
@@ -21,9 +25,16 @@ const SRC_DIR = path.join(__dirname, '..', 'src');
 const OUT_DIR = path.join(__dirname, '..', 'layouts');
 
 const CELL_WIDTH = 6;
+const CELL_TOTAL_WIDTH = CELL_WIDTH + 2; // "[" + text + "]"
 const HALF_GAP = '   │   ';
+const BLANK_CELL = ' '.repeat(CELL_TOTAL_WIDTH);
 
+// -1 means no physical key exists there at all (e.g. the columns a thumb
+// row doesn't use), so it renders as blank space rather than a bracketed
+// cell — that keeps every row the same width per half, which is what lines
+// the "│" gap up across rows and gives the thumb cluster its floating look.
 function cell(code) {
+  if (code === -1) return BLANK_CELL;
   const text = label(code);
   const padding = Math.max(0, CELL_WIDTH - text.length);
   const left = Math.floor(padding / 2);
@@ -32,12 +43,8 @@ function cell(code) {
 }
 
 function renderRow(leftRow, rightRow) {
-  const left = leftRow.filter(c => c !== -1).map(cell).join(' ');
-  const right = [...rightRow]
-    .reverse()
-    .filter(c => c !== -1)
-    .map(cell)
-    .join(' ');
+  const left = leftRow.map(cell).join(' ');
+  const right = [...rightRow].reverse().map(cell).join(' ');
   return `${left}${HALF_GAP}${right}`;
 }
 
