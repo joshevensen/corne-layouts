@@ -4,6 +4,7 @@
   "description": "Vial layouts for a Corne keyboard. Edit the readable JSON in src/, build produces the .vil files Vial imports.",
   "scripts": {
     "build": "node scripts/build.js",
-    "format": "node scripts/format.js"
+    "format": "node scripts/format.js",
+    "render": "node scripts/render-layouts.js"
   }
 }
