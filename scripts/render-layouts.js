@@ -16,9 +16,9 @@
 // look instead of being flush left. Rows are printed straight, without the
 // keyboard's physical column stagger.
 //
-// The row/column numbers in each diagram are the actual indices into that
-// layer's 8-row array (layout[layer][row][col]) — "L0 R4" labels a printed
-// line as left-half array row 0 merged with right-half array row 4, and the
+// Each printed line gets a single row label, R3 (top) down to R0 (thumbs) —
+// not the raw array's row index, which would need two numbers per line
+// since layout[layer] interleaves left (rows 0-3) and right (rows 4-7). The
 // column header is each row's own array column index (right-half columns
 // print in the same reversed order as the cells above them).
 
@@ -34,7 +34,7 @@ const CELL_WIDTH = 5;
 const CELL_TOTAL_WIDTH = CELL_WIDTH + 2; // "[" + text + "]"
 const HALF_GAP = '   │   ';
 const BLANK_CELL = ' '.repeat(CELL_TOTAL_WIDTH);
-const ROW_LABEL_WIDTH = 5; // "L0 R4"
+const ROW_LABEL_WIDTH = 2; // "R3"
 
 function centered(text, width) {
   const padding = Math.max(0, width - text.length);
@@ -74,11 +74,11 @@ function renderLayer(layer) {
   const [l1, l2, l3, lThumb, r1, r2, r3, rThumb] = layer;
   return [
     renderColHeader(),
-    renderRow('L0 R4', l1, r1),
-    renderRow('L1 R5', l2, r2),
-    renderRow('L2 R6', l3, r3),
+    renderRow('R3', l1, r1),
+    renderRow('R2', l2, r2),
+    renderRow('R1', l3, r3),
     '',
-    renderRow('L3 R7', lThumb, rThumb),
+    renderRow('R0', lThumb, rThumb),
   ].join('\n');
 }
 
