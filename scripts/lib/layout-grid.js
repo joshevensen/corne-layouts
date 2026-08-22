@@ -17,6 +17,12 @@
 // Each printed line gets a single row label, R3 (top) down to R0 (thumbs),
 // merging that layer's left-half array row with its right-half array row
 // (layout[layer] stores left as rows 0-3 and right as rows 4-7).
+//
+// Home-position columns (see HOME_COLS below) render with (parens) instead
+// of [brackets] as a purely visual anchor — same columns on every layer,
+// regardless of what's assigned there — so you can spot where fingers/
+// thumbs rest at a glance. The parser accepts either bracket style
+// anywhere, so this never affects what a cell parses to.
 
 const { label, parseLabel } = require('./keycode-labels');
 
@@ -36,6 +42,22 @@ const ROW_SPECS = [
   { rowLabel: 'R0', leftRow: 3, rightRow: 7 },
 ];
 
+// Column indices marked as "home position" (where fingers/thumbs rest),
+// same on both halves — rendered with (parens) instead of [brackets],
+// purely a visual anchor with no effect on the keycode there. R2 (home
+// row): the 4 columns each hand naturally rests on, skipping the outer
+// and innermost columns, which are more of a reach. R0 (thumbs): the
+// middle thumb key (Space/Enter), the one a resting thumb naturally lands
+// on. R3/R1 have no home-position columns.
+const HOME_COLS = {
+  R2: [1, 2, 3, 4],
+  R0: [4],
+};
+
+function isHomeCol(rowLabel, col) {
+  return (HOME_COLS[rowLabel] || []).includes(col);
+}
+
 function centered(text, width) {
   const padding = Math.max(0, width - text.length);
   const left = Math.floor(padding / 2);
@@ -47,9 +69,12 @@ function centered(text, width) {
 // row doesn't use), so it renders as blank space rather than a bracketed
 // cell — that keeps every row the same width per half, which is what lines
 // the "│" gap up across rows and gives the thumb cluster its floating look.
-function cell(code) {
+// home: whether this is a home-position column (see HOME_COLS) — purely
+// cosmetic, swaps the [brackets] for (parens).
+function cell(code, home) {
   if (code === -1) return BLANK_CELL;
-  return `[${centered(label(code), CELL_WIDTH)}]`;
+  const [open, close] = home ? ['(', ')'] : ['[', ']'];
+  return `${open}${centered(label(code), CELL_WIDTH)}${close}`;
 }
 
 // Unbracketed, same total width as cell() so it lines up with the row above.
@@ -58,8 +83,11 @@ function colHeaderCell(n) {
 }
 
 function renderRow(rowLabelText, leftRow, rightRow) {
-  const left = leftRow.map(cell).join(' ');
-  const right = [...rightRow].reverse().map(cell).join(' ');
+  const left = leftRow.map((code, i) => cell(code, isHomeCol(rowLabelText, i))).join(' ');
+  const right = rightRow
+    .map((code, i) => cell(code, isHomeCol(rowLabelText, i)))
+    .reverse()
+    .join(' ');
   return `${rowLabelText.padEnd(ROW_LABEL_WIDTH)} ${left}${HALF_GAP}${right}`;
 }
 
@@ -80,10 +108,13 @@ function renderLayer(layer) {
 
 // --- Parsing direction: a rendered code block -> a layer array ---
 
+// Accepts either [brackets] or (parens) — the latter is just the
+// home-position visual marker (see HOME_COLS) and carries no meaning of
+// its own, so a cell isn't required to use the "right" one for its column.
 function parseCellToken(raw, side) {
   if (raw === BLANK_CELL) return -1;
-  const m = /^\[(.*)\]$/.exec(raw);
-  if (!m) throw new Error(`Malformed key cell ${JSON.stringify(raw)} (expected "[...]" or blank space)`);
+  const m = /^[[(](.*)[\])]$/.exec(raw);
+  if (!m) throw new Error(`Malformed key cell ${JSON.stringify(raw)} (expected "[...]", "(...)", or blank space)`);
   return parseLabel(m[1].trim(), side);
 }
 
