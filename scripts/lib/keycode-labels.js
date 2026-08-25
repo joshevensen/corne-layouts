@@ -65,6 +65,16 @@ const NAMES = {
   FN_MO23: 'MO2',
   KC_NO: '',
   KC_TRNS: '▽',
+  'LSFT(KC_1)': '!',
+  'LSFT(KC_2)': '@',
+  'LSFT(KC_3)': '#',
+  'LSFT(KC_4)': '$',
+  'LSFT(KC_5)': '%',
+  'LSFT(KC_6)': '^',
+  'LSFT(KC_7)': '&',
+  'LSFT(KC_8)': '*',
+  'LSFT(KC_9)': '(',
+  'LSFT(KC_0)': ')',
 };
 
 // Wrapper functions like LGUI(KC_C) -> hold this modifier while tapping kc.
