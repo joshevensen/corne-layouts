@@ -1,12 +1,115 @@
 # QMK / Vial Keycode Reference — macOS, Corne 44-key
 
-Scope: macOS-relevant keycodes + layer and mod-tap keycodes. Written for Vial
-(GUI assignment), so where a keycode isn't in the picker, use the **Any** key
-field and type the keycode text exactly as shown.
+Scope: the full set of keycodes for building a layout — letters, digits,
+punctuation and symbols — plus the macOS-relevant, layer, and mod-tap
+keycodes. Written for Vial (GUI assignment), so where a keycode isn't in the
+picker, use the **Any** key field and type the keycode text exactly as shown.
 
 ---
 
-## 1. Modifiers — what the Mac actually sees
+## 1. Letters & digits
+
+These are US-ANSI *position* keycodes — the name refers to the physical key,
+not a fixed glyph. What glyph a key actually types depends on the macOS
+input source, though this table assumes the default US layout.
+
+| Keycode | Types | Shifted |
+|---|---|---|
+| `KC_A` | a | A |
+| `KC_B` | b | B |
+| `KC_C` | c | C |
+| `KC_D` | d | D |
+| `KC_E` | e | E |
+| `KC_F` | f | F |
+| `KC_G` | g | G |
+| `KC_H` | h | H |
+| `KC_I` | i | I |
+| `KC_J` | j | J |
+| `KC_K` | k | K |
+| `KC_L` | l | L |
+| `KC_M` | m | M |
+| `KC_N` | n | N |
+| `KC_O` | o | O |
+| `KC_P` | p | P |
+| `KC_Q` | q | Q |
+| `KC_R` | r | R |
+| `KC_S` | s | S |
+| `KC_T` | t | T |
+| `KC_U` | u | U |
+| `KC_V` | v | V |
+| `KC_W` | w | W |
+| `KC_X` | x | X |
+| `KC_Y` | y | Y |
+| `KC_Z` | z | Z |
+
+| Keycode | Types | Shifted (US ANSI) | Shifted keycode |
+|---|---|---|---|
+| `KC_1` | 1 | ! | `LSFT(KC_1)` |
+| `KC_2` | 2 | @ | `LSFT(KC_2)` |
+| `KC_3` | 3 | # | `LSFT(KC_3)` |
+| `KC_4` | 4 | $ | `LSFT(KC_4)` |
+| `KC_5` | 5 | % | `LSFT(KC_5)` |
+| `KC_6` | 6 | ^ | `LSFT(KC_6)` |
+| `KC_7` | 7 | & | `LSFT(KC_7)` |
+| `KC_8` | 8 | * | `LSFT(KC_8)` |
+| `KC_9` | 9 | ( | `LSFT(KC_9)` |
+| `KC_0` | 0 | ) | `LSFT(KC_0)` |
+
+`LSFT(kc)` is the same wrapper documented in §3 — this repo's layout files
+render it as `⇧` + the label (e.g. `LSFT(KC_8)` shows as `⇧8` in
+`layouts/custom.md`). On macOS, `SGUI(KC_3)`/`SGUI(KC_4)`/`SGUI(KC_5)` are
+screenshot shortcuts (see §4) — unrelated to typing shifted digits on a
+symbol layer.
+
+---
+
+## 2. Punctuation & symbols
+
+| Keycode | Types | Shifted | Shifted keycode |
+|---|---|---|---|
+| `KC_MINUS` | - | _ | `LSFT(KC_MINUS)` |
+| `KC_EQUAL` | = | + | `LSFT(KC_EQUAL)` |
+| `KC_LBRACKET` | [ | { | `LSFT(KC_LBRACKET)` |
+| `KC_RBRACKET` | ] | } | `LSFT(KC_RBRACKET)` |
+| `KC_BSLASH` | \ | \| | `LSFT(KC_BSLASH)` |
+| `KC_SCOLON` | ; | : | `LSFT(KC_SCOLON)` |
+| `KC_QUOTE` | ' | " | `LSFT(KC_QUOTE)` |
+| `KC_GRAVE` | `` ` `` | ~ | `LSFT(KC_GRAVE)` |
+| `KC_COMMA` | , | < | `LSFT(KC_COMMA)` |
+| `KC_DOT` | . | > | `LSFT(KC_DOT)` |
+| `KC_SLASH` | / | ? | `LSFT(KC_SLASH)` |
+
+> These are the spellings this repo's tooling accepts
+> (`scripts/lib/keycode-labels.js`). QMK's newer aliases — `KC_SEMICOLON`,
+> `KC_BACKSLASH`, `KC_LBRC`/`KC_RBRC`, `KC_GRV`, `KC_QUOT` — are **not**
+> recognized by `npm run build`; use the names above verbatim in
+> `layouts/*.md`.
+
+(§5 Navigation below still uses the short forms `KC_BSPC`, `KC_DEL`, `KC_GRV`
+for historical reasons — those rows are unchanged. The names above are the
+ones to use for new layout work.)
+
+macOS Option-key glyphs built from these same base keycodes:
+
+| Chord | Keycode | Produces |
+|---|---|---|
+| ⌥- | `LALT(KC_MINUS)` | – (en dash) |
+| ⇧⌥- | `LSA(KC_MINUS)` | — (em dash) |
+| ⌥[ / ⇧⌥[ | `LALT(KC_LBRACKET)` / `LSA(KC_LBRACKET)` | " / " |
+| ⌥] / ⇧⌥] | `LALT(KC_RBRACKET)` / `LSA(KC_RBRACKET)` | ' / ' |
+| ⌥; | `LALT(KC_SCOLON)` | … |
+| ⌥= | `LALT(KC_EQUAL)` | ≠ |
+| ⌥, / ⌥. | `LALT(KC_COMMA)` / `LALT(KC_DOT)` | ≤ / ≥ |
+| ⌥/ | `LALT(KC_SLASH)` | ÷ |
+| ⌥\ / ⇧⌥\ | `LALT(KC_BSLASH)` / `LSA(KC_BSLASH)` | « / » |
+
+These are US input-source glyphs; `LALT`/`LSA` are the same wrappers from
+§3. Note that macOS "Smart quotes" substitution in Notes/Pages/TextEdit can
+override the straight `KC_QUOTE` output in some apps.
+
+---
+
+## 3. Modifiers — what the Mac actually sees
 
 | Keycode | Alias | macOS key | Notes |
 |---|---|---|---|
@@ -40,7 +143,7 @@ field and type the keycode text exactly as shown.
 
 ---
 
-## 2. macOS system & media keycodes
+## 4. macOS system & media keycodes
 
 These are HID Consumer Control usages. All of these work on macOS natively.
 
@@ -78,7 +181,7 @@ Consumer page. macOS historically needed these. Modern macOS accepts
 
 ---
 
-## 3. Navigation & editing — what to actually put on your nav layer
+## 5. Navigation & editing — what to actually put on your nav layer
 
 Raw keycodes first, then the macOS text-editing chords worth binding directly.
 
@@ -110,7 +213,7 @@ e.g. `SGUI(KC_LEFT)` selects to start of line.
 
 ---
 
-## 4. Layer keycodes
+## 6. Layer keycodes
 
 `n` = layer number. Layer 0 is your base.
 
@@ -135,7 +238,7 @@ manually; there's no separate setting.
 
 ---
 
-## 5. Mod-tap & one-shot
+## 7. Mod-tap & one-shot
 
 **Mod-tap** — `MT(mod, kc)`: tap sends `kc`, hold sends the modifier.
 
@@ -173,7 +276,7 @@ manually; there's no separate setting.
 
 ---
 
-## 6. Quantum / QMK feature keycodes
+## 8. Quantum / QMK feature keycodes
 
 | Keycode | Does | Mac note |
 |---|---|---|
@@ -194,7 +297,7 @@ manually; there's no separate setting.
 
 ---
 
-## 7. Auto Shift — the honest assessment
+## 9. Auto Shift — the honest assessment
 
 **How it works:** tap a key normally → unshifted char. Hold it past
 `AUTO_SHIFT_TIMEOUT` → shifted char. No Shift key needed.
@@ -220,7 +323,7 @@ Auto Shift restricted to symbols/numbers rather than alphas.
 
 ---
 
-## 8. Vial-specific notes
+## 10. Vial-specific notes
 
 - **Any key field:** anything not in the picker (nested wrappers,
   `OSM(MOD_LCTL | MOD_LSFT)`, `LT(3, KC_TAB)`) can be typed as text.
@@ -234,7 +337,7 @@ Auto Shift restricted to symbols/numbers rather than alphas.
 
 ---
 
-## 9. Suggested starting point for your 3 layers
+## 11. Suggested starting point for your 3 layers
 
 Given Qwerty is fixed and you're new to layers:
 
@@ -242,7 +345,7 @@ Given Qwerty is fixed and you're new to layers:
   `LT(2, KC_ENT)`, plus a Shift or Backspace. Extra OLED-position keys are
   ideal for ⌘ and ⌥ since they're pinky-adjacent.
 - **Layer 1 (Nav/Num):** right hand = arrows + the ⌘/⌥ movement chords from
-  §3; left hand = numbers or a numpad cluster.
+  §5; left hand = numbers or a numpad cluster.
 - **Layer 2 (Sym):** brackets, braces, operators. Mirror your most-typed
   programming symbols to the home row.
 - **Layer 3 (tri-layer, both thumbs):** F-keys, media, brightness,

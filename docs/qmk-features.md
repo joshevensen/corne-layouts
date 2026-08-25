@@ -67,7 +67,7 @@ For a modified tap, you need Tap Dance.
 *docs.qmk.fm/mod_tap*
 
 Tap for a character, hold for a modifier. The highest value-per-key feature on
-a split. See §5 of the keycode reference for the full keycode list and the four
+a split. See §7 of the keycode reference for the full keycode list and the four
 Vial tap-hold settings that govern it.
 
 **Your decision point:** home-row mods vs. thumb/outer-column mods.
@@ -209,7 +209,7 @@ Largely superseded by mod-taps and layers generally.
 ### Auto Shift
 *docs.qmk.fm/features/auto_shift*
 
-Full analysis in §7 of the keycode reference. Summary:
+Full analysis in §9 of the keycode reference. Summary:
 <cite index="6-1">key repeat stops working entirely</cite>, and
 <cite index="6-1">you'll get unintended shifts until you retrain</cite>.
 It's a key-scarcity feature. You have 4 spare keys.
