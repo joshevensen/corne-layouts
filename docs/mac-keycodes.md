@@ -79,11 +79,14 @@ symbol layer.
 | `KC_DOT` | . | > | `LSFT(KC_DOT)` |
 | `KC_SLASH` | / | ? | `LSFT(KC_SLASH)` |
 
-> These are the spellings this repo's tooling accepts
+> These are the spellings this repo's short-label parser accepts
 > (`scripts/lib/keycode-labels.js`). QMK's newer aliases — `KC_SEMICOLON`,
 > `KC_BACKSLASH`, `KC_LBRC`/`KC_RBRC`, `KC_GRV`, `KC_QUOT` — are **not**
-> recognized by `npm run build`; use the names above verbatim in
-> `layouts/*.md`.
+> recognized there, so typing one into a layer-grid cell makes
+> `npm run build` fail with `Unrecognized key label`. (Combos and Macros
+> entries take raw keycode strings with no such check, so an alias
+> wouldn't error there — but use the names above everywhere for
+> consistency.)
 
 (§5 Navigation below still uses the short forms `KC_BSPC`, `KC_DEL`, `KC_GRV`
 for historical reasons — those rows are unchanged. The names above are the

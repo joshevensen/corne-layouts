@@ -1,6 +1,6 @@
 # QMK / Vial Features — Triage for Corne V4.1 (46-key, macOS, Vial)
 
-Companion to `corne-mac-keycode-reference.md`.
+Companion to `mac-keycodes.md`.
 
 QMK's docs have no curated overview — the sidebar "Features" section is an
 alphabetical dump with no indication of which features matter. This is that
