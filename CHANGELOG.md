@@ -7,4 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Letters & digits (§1) and Punctuation & symbols (§2) sections in `docs/mac-keycodes.md`, documenting US-ANSI position keycodes, shifted characters, and macOS Option-key glyphs.
+
 [Unreleased]: https://github.com/joshevensen/corne-layouts/compare/HEAD...HEAD
