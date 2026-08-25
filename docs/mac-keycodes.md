@@ -56,7 +56,10 @@ input source, though this table assumes the default US layout.
 | `KC_0` | 0 | ) | `LSFT(KC_0)` |
 
 `LSFT(kc)` is the same wrapper documented in §3 — this repo's layout files
-render it as `⇧` + the label (e.g. `LSFT(KC_8)` shows as `⇧8` in
+render most combos as `⇧` + the label (e.g. `LSFT(KC_MINUS)` shows as `⇧-`),
+except the ten shifted-digit combos above (`LSFT(KC_1)` through `LSFT(KC_0)`),
+which get a dedicated `scripts/lib/keycode-labels.js` entry and render as the
+bare resultant glyph instead (e.g. `LSFT(KC_8)` shows as `*` in
 `layouts/custom.md`). On macOS, `SGUI(KC_3)`/`SGUI(KC_4)`/`SGUI(KC_5)` are
 screenshot shortcuts (see §4) — unrelated to typing shifted digits on a
 symbol layer.
